@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SecureBot Dashboard</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--tx:#1b2430;--bd:#d9dfe5;--ac:#1d6fd8}
+@media(prefers-color-scheme:dark){:root{--bg:#12161b;--card:#1b222a;--tx:#e6ebf0;--bd:#2c3641;--ac:#5a9cf0}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font:14px system-ui,sans-serif}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px;max-width:640px}
+input,button{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+button{cursor:pointer;border-color:var(--ac)}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:4px 6px;border-bottom:1px solid var(--bd)}
+</style></head><body>
+<h2>SecureBot Dashboard</h2>
+<div class="card" id="loginBox">
+  <input id="u" value="admin" aria-label="username"> <input id="p" type="password" placeholder="password" aria-label="password">
+  <button id="go">Login</button> <span id="msg"></span>
+</div>
+<div class="card" id="panel" hidden>
+  <button data-c="ALARM_OFF">ALARM_OFF</button> <button data-c="PATROL_PAUSE">PATROL_PAUSE</button> <button data-c="PATROL_RESUME">PATROL_RESUME</button>
+  <table><thead><tr><th>Waktu</th><th>Perangkat</th><th>Kejadian</th></tr></thead><tbody id="rows"></tbody></table>
+</div>
+<p><a href="/simulator">Buka simulator robot</a></p>
+<script>
+let token='';
+const $=id=>document.getElementById(id);
+const h=()=>({'content-type':'application/json',authorization:'Bearer '+token});
+async function load(){
+  const r=await fetch('/api/events',{headers:h()}); if(!r.ok)return;
+  const rows=$('rows'); rows.textContent='';
+  for(const e of (await r.json()).reverse()){
+    const tr=rows.insertRow();
+    [new Date(e.at).toLocaleTimeString('id-ID'),e.device,JSON.stringify(e.event)].forEach(t=>{tr.insertCell().textContent=t;}); // textContent: anti-XSS
+  }
+}
+$('go').onclick=async()=>{
+  const r=await fetch('/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:$('u').value,password:$('p').value})});
+  if(!r.ok){$('msg').textContent='Login gagal';return;}
+  token=(await r.json()).token; $('loginBox').hidden=true; $('panel').hidden=false; load(); setInterval(load,3000);
+};
+document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>fetch('/api/commands',{method:'POST',headers:h(),body:JSON.stringify({command:b.dataset.c})}));
+</script></body></html>

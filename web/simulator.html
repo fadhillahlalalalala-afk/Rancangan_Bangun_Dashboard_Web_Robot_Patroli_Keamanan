@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SecureBot Simulator</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--tx:#1b2430;--mut:#6b7785;--bd:#d9dfe5;--ac:#1d6fd8;--bad:#d93a3a;--ok:#1f9d55;--cv:#eef2f5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--card:#1b222a;--tx:#e6ebf0;--mut:#8b97a4;--bd:#2c3641;--ac:#5a9cf0;--bad:#f06565;--ok:#3ec47c;--cv:#161c22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;padding:12px}
+h1{font-size:18px;margin:0 0 2px}.sub{color:var(--mut);margin:0 0 12px;font-size:13px}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px}
+.card h2{font-size:13px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+canvas{width:100%;height:auto;background:var(--cv);border-radius:8px;display:block;cursor:crosshair}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:6px 10px;border-radius:8px;cursor:pointer;margin:2px 2px 2px 0}
+button:hover{border-color:var(--ac)}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.d{border-color:var(--bad);color:var(--bad)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}
+.b-ok{background:rgba(31,157,85,.15);color:var(--ok)}.b-bad{background:rgba(217,58,58,.15);color:var(--bad)}.b-in{background:rgba(29,111,216,.15);color:var(--ac)}
+.log{height:170px;overflow:auto;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--cv);border-radius:8px;padding:8px}
+.log div{border-bottom:1px dashed var(--bd);padding:1px 0}.e{color:var(--bad)}.g{color:var(--ok)}.w{color:var(--mut)}
+.tg{background:var(--cv);border-radius:8px;padding:8px;height:130px;overflow:auto}
+.msg{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:5px 9px;margin:0 0 5px;max-width:90%;font-size:13px}
+.wire{font:11px ui-monospace,Menlo,Consolas,monospace;word-break:break-all;background:var(--cv);border-radius:8px;padding:8px;min-height:54px}
+.wrap{overflow-x:auto}
+</style>
+</head>
+<body>
+<h1>SecureBot Simulator</h1>
+<p class="sub">Robot patroli virtual di lab: stop, scan 180°, alarm, notifikasi, lalu uji serangan sebelum dan sesudah diamankan.</p>
+<div class="grid">
+<div>
+  <div class="card">
+    <h2>Denah lab (klik untuk memindahkan penyusup)</h2>
+    <canvas id="cv" width="640" height="400"></canvas>
+    <div class="row" style="margin-top:8px">
+      <button class="p" id="bIntruder">Munculkan penyusup</button>
+      <button id="bShake">Guncang robot (SW-420)</button>
+      <button id="bPause">Jeda</button>
+      <span>Status: <span id="st" class="badge b-in">PATROL</span></span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Log sistem (server)</h2>
+    <div class="log" id="log"></div>
+  </div>
+</div>
+<div>
+  <div class="card">
+    <h2>Mode keamanan</h2>
+    <div class="row">
+      <button id="bMode" class="d">Mode TIDAK AMAN</button>
+      <span id="modeB" class="badge b-bad">plaintext</span>
+    </div>
+    <p class="sub" style="margin-top:6px">Aman = AES-256-GCM + nonce counter (anti-replay).</p>
+  </div>
+  <div class="card">
+    <h2>Notifikasi Telegram (tampilan)</h2>
+    <div class="tg" id="tg"></div>
+  </div>
+  <div class="card">
+    <h2>Lalu lintas jaringan (yang dilihat penyadap)</h2>
+    <div class="wire" id="wire">Belum ada paket.</div>
+    <div class="row" style="margin-top:6px">
+      <button class="d" id="bReplay">Serangan replay</button>
+      <button class="d" id="bSpoof">Serangan spoofing</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const cv=document.getElementById('cv'),c=cv.getContext('2d');
+const $=id=>document.getElementById(id);
+const WP=[[80,80,'A'],[560,80,'B'],[560,320,'C'],[80,320,'D']];
+const desks=[[200,150,240,40],[200,240,240,40]];
+const R={x:80,y:80,h:0,t:0,state:'PATROL',ts:0,dir:'',acc:0};
+let I=null,paused=false,secure=false,ctr=0,lastSeen=0,lastPkt=null,key=null,alertSent=false,shake=0;
+
+const rad=d=>d*Math.PI/180;
+function log(t,cls){const d=document.createElement('div');if(cls)d.className=cls;d.textContent=new Date().toLocaleTimeString('id-ID')+'  '+t;const l=$('log');l.prepend(d);}
+function tg(t){const m=document.createElement('div');m.className='msg';m.textContent=t;$('tg').prepend(m);}
+function setState(s){R.state=s;R.ts=performance.now();$('st').textContent=s;$('st').className='badge '+(s==='ALERT'?'b-bad':s==='PATROL'?'b-in':'b-ok');}
+
+// ---- Kripto ----
+const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
+const unb64=s=>Uint8Array.from(atob(s),x=>x.charCodeAt(0));
+async function initKey(){key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
+function ivOf(n){const iv=new Uint8Array(12);new DataView(iv.buffer).setUint32(8,n);return iv;}
+async function buildPacket(p){
+  if(!secure)return {mode:'plain',body:JSON.stringify(p)};
+  ctr++;p.ctr=ctr;
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:ivOf(ctr)},key,new TextEncoder().encode(JSON.stringify(p)));
+  return {mode:'gcm',ctr,body:b64(ct)};
+}
+async function serverReceive(pk,label){
+  $('wire').textContent=(pk.mode==='plain'?'[PLAINTEXT] ':'[AES-GCM ctr='+pk.ctr+'] ')+pk.body;
+  lastPkt=pk;
+  let p;
+  if(pk.mode==='plain'){try{p=JSON.parse(pk.body);}catch(e){log('Paket rusak ditolak','e');return;}}
+  else{
+    try{
+      const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:ivOf(pk.ctr)},key,unb64(pk.body));
+      p=JSON.parse(new TextDecoder().decode(pt));
+    }catch(e){log('DITOLAK ('+label+'): tag autentikasi tidak valid, paket palsu/rusak','e');return;}
+    if(p.ctr<=lastSeen){log('DITOLAK ('+label+'): counter '+p.ctr+' sudah pernah dipakai (replay)','e');return;}
+    lastSeen=p.ctr;
+  }
+  log('DITERIMA ('+label+'): '+p.event+' '+(p.zone||'')+' '+(p.dir||''),'g');
+  tg(p.text);
+}
+async function sendAlert(event,dir){
+  const zone=nearestWP();
+  const text=event==='getar'?'⚠️ SecureBot diguncang/diangkat!':'🚨 Gerakan di titik '+zone+', arah '+dir+' ('+new Date().toLocaleTimeString('id-ID')+')';
+  const pk=await buildPacket({event,zone,dir,text});
+  serverReceive(pk,'robot');
+}
+function nearestWP(){let b=WP[0],d=1e9;for(const w of WP){const k=Math.hypot(w[0]-R.x,w[1]-R.y);if(k<d){d=k;b=w;}}return b[2];}
+
+// ---- Serangan ----
+$('bReplay').onclick=()=>{if(!lastPkt){log('Belum ada paket untuk direplay','w');return;}log('PENYERANG mengirim ulang paket terakhir...','e');serverReceive(JSON.parse(JSON.stringify(lastPkt)),'replay');};
+$('bSpoof').onclick=async()=>{
+  log('PENYERANG mengirim peringatan palsu...','e');
+  const fake={event:'gerak',zone:'X',dir:'TENGAH',text:'🚨 [PALSU] Gerakan di titik X'};
+  if(!secure)serverReceive({mode:'plain',body:JSON.stringify(fake)},'spoof');
+  else{const junk=new Uint8Array(40);crypto.getRandomValues(junk);serverReceive({mode:'gcm',ctr:lastSeen+1,body:b64(junk)},'spoof');}
+};
+$('bMode').onclick=()=>{secure=!secure;$('bMode').textContent=secure?'Mode AMAN':'Mode TIDAK AMAN';$('bMode').className=secure?'p':'d';
+  $('modeB').textContent=secure?'AES-256-GCM':'plaintext';$('modeB').className='badge '+(secure?'b-ok':'b-bad');log('Mode diganti: '+(secure?'AMAN':'TIDAK AMAN'),'w');};
+
+// ---- Kontrol ----
+$('bIntruder').onclick=()=>{if(I){I=null;$('bIntruder').textContent='Munculkan penyusup';}else{I={x:300+Math.random()*200,y:60+Math.random()*60,vx:(Math.random()-.5)*30,vy:(Math.random()-.5)*30};$('bIntruder').textContent='Hilangkan penyusup';log('Penyusup masuk lab','w');}};
+$('bShake').onclick=()=>{shake=1.5;log('Robot diguncang','w');sendAlert('getar','-');};
+$('bPause').onclick=()=>{paused=!paused;$('bPause').textContent=paused?'Lanjut':'Jeda';};
+cv.addEventListener('click',e=>{if(!I)return;const r=cv.getBoundingClientRect();I.x=(e.clientX-r.left)*cv.width/r.width;I.y=(e.clientY-r.top)*cv.height/r.height;I.vx=I.vy=0;});
+
+// ---- Deteksi PIR 3 sektor, 180° ----
+function detect(){
+  if(!I)return null;
+  const dx=I.x-R.x,dy=I.y-R.y,dist=Math.hypot(dx,dy);
+  if(dist>150)return null;
+  let a=Math.atan2(dy,dx)-R.h;a=Math.atan2(Math.sin(a),Math.cos(a));
+  if(Math.abs(a)>Math.PI/2)return null;
+  const deg=a*180/Math.PI;
+  return deg<-30?'KIRI':deg>30?'KANAN':'TENGAH';
+}
+
+// ---- Loop ----
+let last=performance.now(),tgt=1;
+function step(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(!paused){
+    if(I&&(I.vx||I.vy)){I.x+=I.vx*dt;I.y+=I.vy*dt;if(I.x<20||I.x>620)I.vx*=-1;if(I.y<20||I.y>380)I.vy*=-1;if(Math.random()<.01){I.vx=(Math.random()-.5)*40;I.vy=(Math.random()-.5)*40;}}
+    if(shake>0)shake-=dt;
+    const el=now-R.ts;
+    if(R.state==='PATROL'){
+      const w=WP[tgt],dx=w[0]-R.x,dy=w[1]-R.y,d=Math.hypot(dx,dy);
+      R.h=Math.atan2(dy,dx);
+      if(d<4){tgt=(tgt+1)%WP.length;setState('STOP');}
+      else{const v=70*dt;R.x+=dx/d*v;R.y+=dy/d*v;}
+    }else if(R.state==='STOP'){if(el>1200)setState('SCAN');}
+    else if(R.state==='SCAN'){
+      const d=detect();
+      if(d){R.dir=d;alertSent=false;setState('ALERT');}
+      else if(el>3500)setState('PATROL');
+    }else if(R.state==='ALERT'){
+      if(!alertSent){alertSent=true;sendAlert('gerak',R.dir);}
+      if(el>5000)setState('COOLDOWN');
+    }else if(R.state==='COOLDOWN'){
+      if(detect())R.ts=now;
+      else if(el>3000){tg('✅ Situasi aman, patroli dilanjutkan');log('Situasi aman, patroli lanjut','g');setState('PATROL');}
+    }
+  }
+  draw();requestAnimationFrame(step);
+}
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function draw(){
+  c.clearRect(0,0,640,400);
+  c.strokeStyle=css('--bd');c.lineWidth=3;c.strokeRect(10,10,620,380);
+  c.fillStyle=css('--bd');for(const d of desks)c.fillRect(...d);
+  c.setLineDash([6,6]);c.lineWidth=1;c.beginPath();WP.forEach((w,i)=>i?c.lineTo(w[0],w[1]):c.moveTo(w[0],w[1]));c.closePath();c.stroke();c.setLineDash([]);
+  c.font='bold 13px system-ui';
+  for(const w of WP){c.fillStyle=css('--ac');c.beginPath();c.arc(w[0],w[1],6,0,7);c.fill();c.fillText(w[2],w[0]+9,w[1]-9);}
+  const alert=R.state==='ALERT';
+  // FOV 180° dibagi 3 sektor
+  for(let i=0;i<3;i++){
+    const a0=R.h-Math.PI/2+i*Math.PI/3,a1=a0+Math.PI/3;
+    c.beginPath();c.moveTo(R.x,R.y);c.arc(R.x,R.y,150,a0,a1);c.closePath();
+    c.fillStyle=(alert&&['KIRI','TENGAH','KANAN'][i]===R.dir)?'rgba(217,58,58,.35)':(R.state==='SCAN'?'rgba(29,111,216,.22)':'rgba(29,111,216,.07)');
+    c.fill();
+  }
+  c.save();c.translate(R.x+(shake>0?Math.random()*4-2:0),R.y);c.rotate(R.h);
+  c.fillStyle=alert?css('--bad'):css('--tx');c.fillRect(-12,-9,24,18);
+  c.fillStyle=css('--card');c.fillRect(4,-3,8,6);c.restore();
+  if(I){c.fillStyle=css('--bad');c.beginPath();c.arc(I.x,I.y,8,0,7);c.fill();c.fillStyle=css('--tx');c.fillText('penyusup',I.x+11,I.y+4);}
+}
+initKey().then(()=>{log('Sistem siap. Mode awal: TIDAK AMAN (untuk uji serangan)','w');requestAnimationFrame(step);});
+</script>
+</body>
+</html>
