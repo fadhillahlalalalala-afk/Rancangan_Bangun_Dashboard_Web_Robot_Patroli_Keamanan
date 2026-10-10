@@ -3,7 +3,7 @@
 Repository bersama untuk **Kriptografi**, **Pengembangan Aplikasi Web**, dan **Keamanan Komputasi dan Siber**.
 Tag penilaian Tugas 1 Kriptografi: **v0.1**. Seluruh data di repository ini sintetis.
 
-## 1. Deskripsi produk
+## 1. Deskripsi produk (K1)
 SecureBot adalah dashboard web untuk memantau robot patroli keamanan di lab. Robot berhenti di titik jaga,
 memindai gerakan 180° (kiri, tengah, kanan), lalu mengirim peringatan ke server. Admin melihat riwayat kejadian
 dan mengirim perintah ke robot. Produk terdiri dari:
@@ -16,7 +16,7 @@ dan mengirim perintah ke robot. Produk terdiri dari:
 | Sisi robot (simulasi) | `src/robotClient.js` | Mengenkripsi kejadian, memverifikasi perintah |
 | **Komponen kriptografi** | `src/passwordHash.js`, `src/eventCrypto.js`, `src/commandMac.js` | Tugas ini |
 
-## 2. Kebutuhan kriptografi
+## 2. Kebutuhan kriptografi (K1)
 
 | # | Data (aset) | Tujuan keamanan | Prioritas | Kebutuhan komponen yang dapat diuji | Uji |
 |---|---|---|---|---|---|
@@ -27,7 +27,7 @@ dan mengirim perintah ke robot. Produk terdiri dari:
 Sandi klasik (Caesar, Vigenère) hanya **bahan belajar** dan **tidak dipakai** untuk melindungi data produk
 karena dapat dipecahkan dengan analisis frekuensi dan pencarian kunci menyeluruh.
 
-## 3. Rancangan komponen
+## 3. Rancangan komponen (K2)
 
 | Komponen | Masukan | Proses | Keluaran |
 |---|---|---|---|
@@ -60,7 +60,7 @@ hilang saat server restart; satu kunci bersama untuk semua robot; endpoint `/api
 `/api/commands/next` belum memakai autentikasi robot terpisah; belum ada pembatasan percobaan login.
 Beberapa di antaranya menjadi bahan tugas Keamanan Siber dan tugas Kriptografi berikutnya.
 
-## 4. Cara menjalankan
+## 4. Cara menjalankan (K3)
 Prasyarat: Node.js ≥ 18. Tidak ada dependensi, jadi **tidak perlu `npm install`**.
 
 **a. Uji otomatis (satu perintah)**
