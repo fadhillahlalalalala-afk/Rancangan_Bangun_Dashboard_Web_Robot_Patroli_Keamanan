@@ -1,8 +1,5 @@
 # AI_LOG
 
-> TEMPLATE: periksa, koreksi, dan lengkapi kolom bertanda [isi] sesuai yang benar-benar kamu lakukan.
-> Mahasiswa wajib mampu menjelaskan seluruh kode yang dikumpulkan.
-
 | # | Alat | Tujuan | Ringkasan perintah | Bagian dipakai / diubah | Cara memeriksa |
 |---|---|---|---|---|---|
 | 1 | Claude | Konsep dan simulator web robot patroli | Minta ide simulasi robot virtual dengan sensor 180° dan demo serangan | `web/simulator.html` dipakai; [isi yang kamu ubah] | Menjalankan di browser, mencoba replay dan spoofing di mode aman dan tidak aman |
