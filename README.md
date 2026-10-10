@@ -108,8 +108,7 @@ Rahasia hanya ada di variabel lingkungan, tidak di repository (lihat `.env.examp
 ```
 
 ## 5. Skenario uji (`npm test`: 18 uji, 18 lulus) (K4)
-
-
+https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/blob/main/(K4)img.pdf
 
 | ID | Skenario | Jenis | Hasil yang diharapkan |
 |---|---|---|---|
