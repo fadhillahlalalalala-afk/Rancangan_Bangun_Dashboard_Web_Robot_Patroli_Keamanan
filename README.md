@@ -61,6 +61,8 @@ hilang saat server restart; satu kunci bersama untuk semua robot; endpoint `/api
 Beberapa di antaranya menjadi bahan tugas Keamanan Siber dan tugas Kriptografi berikutnya.
 
 ## 4. Cara menjalankan (K3)
+https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/blob/main/(K3)img.pdf
+
 Prasyarat: Node.js ≥ 18. Tidak ada dependensi, jadi **tidak perlu `npm install`**.
 
 **a. Uji otomatis (satu perintah)**
