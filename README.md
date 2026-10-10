@@ -107,7 +107,9 @@ Rahasia hanya ada di variabel lingkungan, tidak di repository (lihat `.env.examp
   jumlah kejadian tersimpan: 1 -> {"type":"gerak","zone":"B","dir":"KIRI"}
 ```
 
-## 5. Skenario uji (`npm test`: 18 uji, 18 lulus)
+## 5. Skenario uji (`npm test`: 18 uji, 18 lulus) (K4)
+
+
 
 | ID | Skenario | Jenis | Hasil yang diharapkan |
 |---|---|---|---|
