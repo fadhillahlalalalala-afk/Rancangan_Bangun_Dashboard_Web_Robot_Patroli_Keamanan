@@ -136,7 +136,7 @@ Tidak ada kunci, token, atau password asli. Uji dan demo memakai kunci acak yang
 password sintetis. `.env`, `*.pem`, dan `*.key` ada di `.gitignore`.
 
 ## 7. Pencatatan penggunaan AI
-Lihat `AI_LOG.md`.
+Lihat di bagian: `AI_LOG.md`.
 
 ## 8. Struktur repository
 ```
