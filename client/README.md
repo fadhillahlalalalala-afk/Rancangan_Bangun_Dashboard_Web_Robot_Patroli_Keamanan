@@ -68,4 +68,4 @@ npm run preview  # menjalankan hasil build
 Lihat `docs/LAPORAN_PENGUJIAN.md` (kondisi Lighthouse, ukuran layar, dan skenario formulir).
 
 ## Pencatatan penggunaan AI
-Lihat `AI_LOG.md` di akar repository.
+Selama proses pengerjaan proyek pengembangan aplikasi web ini, saya memanfaatkan kecerdasan buatan secara proporsional dan wajar sebagai mitra kolaborasi untuk membantu menyusun kerangka struktur komponen awal React dengan TypeScript dan Tailwind CSS, merumuskan logika validasi formulir sisi klien dalam bahasa Indonesia, serta memberikan panduan teknis langkah demi langkah guna mengatasi kendala penulisan skrip terminal Git saat melakukan commit dan push berkas bukti pengujian ke repository GitHub.
