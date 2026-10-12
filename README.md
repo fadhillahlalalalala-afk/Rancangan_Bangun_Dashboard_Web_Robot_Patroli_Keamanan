@@ -1,4 +1,4 @@
-# SecureBot — Dashboard Web Robot Patroli dengan Pengamanan Kriptografi
+# SecureBot — Dashboard Web Robot Patroli dengan Pengamanan (Kriptografi)
 
 Nama:Muhammad Fadhilah Chandra Mulan
 NIM:105224036
