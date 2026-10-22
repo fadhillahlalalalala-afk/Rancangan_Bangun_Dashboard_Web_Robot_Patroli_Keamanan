@@ -1,8 +1,8 @@
 # Dokumen Teknis Modul 4: Next.js App Router
 
 Nama/NIM :Muhammad Fadhilah Chandra Mulan /105224036
-Repositori :
-Versi Next.js dan mode Cache Components (aktif/tidak) :
+Repositori :https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/edit/praktikum/modul-04/robot-patroli-modul04/docs/praktikum/modul-04.md
+
 
 ## 1. Peta Rute
 | URL | Berkas di app/ | Jenis rute | Isi halaman |
