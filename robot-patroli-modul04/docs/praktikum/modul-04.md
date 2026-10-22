@@ -22,10 +22,10 @@ Versi Next.js dan mode Cache Components (aktif/tidak) :
 ## 3. Rute Dinamis dan Validasi params
 | URL | Hasil diharapkan | Hasil aktual | Kode status curl |
 |---|---|---|---|
-| /katalog/1 | Detail PatroliBot A1 | | |
-| /katalog/abc | Item tidak ditemukan | | |
-| /katalog/999 | Item tidak ditemukan | | |
-| /tidak-ada | Halaman tidak ditemukan | | |
+| /katalog/1 | Detail PatroliBot A1 |Detail PatroliBot A1 |200 |
+| /katalog/abc | Item tidak ditemukan |Item tidak ditemukan | 404|
+| /katalog/999 | Item tidak ditemukan | Item tidak ditemukan|404 |
+| /tidak-ada | Halaman tidak ditemukan | Halaman tidak ditemukan|404 |
 
 Penjelasan aturan validasi params (string, regex `^[1-9]\d*$`, Number, cariItem, notFound()):
 
