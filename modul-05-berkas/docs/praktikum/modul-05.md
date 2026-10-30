@@ -1,7 +1,7 @@
 # Dokumen Teknis Modul 5 — Formulir, Validasi, Session, dan Cookie
 
-Nama/NIM : [ISI NAMA] / [ISI NIM]
-Repositori : [ISI TAUTAN REPOSITORI GITHUB]
+Nama/NIM : Muhammad Fadhilah Chandra Mulan / 105224036
+Repositori : https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/edit/main/modul-05-berkas/docs/praktikum/modul-05.md
 Produk : Web Robot Patroli Keamanan
 
 > Konteks produk: aplikasi web untuk mengelola **titik patroli** robot keamanan. Entitas `Item` pada modul dipetakan menjadi titik patroli: `judul` = nama titik, `kategori` = jenis area (`gedung`, `parkir`, `perimeter`), `deskripsi` = catatan area yang diawasi, `tersedia` = titik aktif dan boleh dikunjungi robot. Halaman tambah titik hanya boleh diakses operator yang sudah masuk.
