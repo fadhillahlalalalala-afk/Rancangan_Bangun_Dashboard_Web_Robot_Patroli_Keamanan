@@ -168,16 +168,7 @@ Skema Zod hanya memeriksa bentuk satu paket masukan (tipe, panjang, pilihan). At
 
 ## 6. Kendala dan Penyelesaian
 
-> Isi dengan kendala yang benar-benar Anda alami. Contoh format di bawah; hapus yang tidak Anda alami.
-
-| Kendala | Penyebab | Penyelesaian |
-|---|---|---|
-| [ISI, misal: item tersimpan tetapi tidak berpindah ke halaman detail] | `redirect` berada di dalam `try`, sehingga ditangkap `catch` | Memindahkan `redirect` ke luar `try`, setelah `revalidatePath` |
-| [ISI, misal: login selalu "Email atau kata sandi salah"] | `.env.local` belum terbaca | Memeriksa nama variabel, menghapus spasi, memulai ulang `npm run dev` |
-| [ISI, misal: pilihan kategori kembali ke "Pilih kategori" setelah galat] | React 19 mereset formulir setelah aksi | Mengembalikan `nilai` dari aksi, memasang `key` dan `defaultValue` pada `<select>` |
-| [ISI] | [ISI] | [ISI] |
-
----
+Kendala utama pada Modul 5 ini terletak pada pengelolaan berkas dan Git, bukan pada kodenya. Pertama, berkas modul yang saya ekstrak dari zip awalnya berada di folder sementara di dalam repositori, sehingga berstatus untracked dan tidak berada di struktur proyek Next.js yang benar. Saya menyelesaikannya dengan memeriksa letak package.json dan folder app, lalu menyalin berkas ke lokasi yang sesuai tanpa menimpa lib/data.ts dan lib/tipe.ts milik Modul 4. Kedua, perintah git switch -c praktikum/modul-05 gagal karena branch tersebut sudah dibuat sebelumnya, sehingga saya berpindah dengan git switch praktikum/modul-05 tanpa opsi -c. Ketiga, saya sempat salah mengetik nama folder pada git add (modul-5 alih-alih modul-05) dan nama folder hasil ekstrak ternyata modul-05-berkas, sehingga Git menolak dengan pesan pathspec did not match dan berkas tidak ikut ter-commit. Saya memperbaikinya dengan membaca git status untuk memastikan nama dan status berkas sebelum menjalankan git add, git commit, dan git push. Dari pengalaman ini saya belajar untuk selalu memeriksa git status dan branch aktif sebelum commit, serta menghindari git add . agar folder sementara dan berkas rahasia seperti .env.local tidak ikut ter-commit.
 
 ## 7. Catatan Pemanfaatan AI
 
