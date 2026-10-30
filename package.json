@@ -1,12 +1,19 @@
 {
   "name": "securebot",
   "version": "0.1.0",
-  "description": "SecureBot: dashboard web robot patroli dengan komponen kriptografi",
+  "description": "SecureBot: dashboard web robot patroli dengan komponen ...",
   "license": "MIT",
   "scripts": {
-    "test":  "node --test",
+    "test": "node --test",
     "demo": "node demo/demo.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "dev": "node --watch --env-file=.env src/server.js"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  }
 }
