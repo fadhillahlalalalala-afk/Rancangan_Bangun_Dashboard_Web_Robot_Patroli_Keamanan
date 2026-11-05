@@ -3,7 +3,7 @@
 **Produk:** Rancangan Bangun Dashboard Web Robot Patroli Keamanan
 
 Nama/NIM :Muhammad Fadhilah Chandra Mulan /105224036
-Repositori : 
+Repositori : https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/edit/main/docs/praktikum/modul-06.md
 Pull request : 
 
 > Catatan: dua entitas pada produk ini adalah **Robot** (induk) dan **LogPatroli** (anak). Keduanya menggantikan Item dan Ulasan pada contoh modul, dengan relasi 1:N dan constraint unik yang sama.
@@ -118,7 +118,7 @@ npx prisma generate
 # Generated Prisma Client (7.x) to ./generated/prisma
 ```
 
-> ✏️ **Ganti keluaran di atas dengan keluaran terminal Anda yang sebenarnya.**
+
 
 `migrate dev` dan `generate` dijalankan **terpisah** karena Prisma 7 tidak lagi menjalankan `generate` maupun seed otomatis setelah `migrate dev`.
 
@@ -131,7 +131,6 @@ prisma/migrations/
 └── migration_lock.toml
 ```
 
-> ✏️ **Ganti dengan hasil `ls prisma/migrations` / `tree prisma/migrations` Anda** (stempel waktu berbeda di tiap komputer).
 
 Folder migrasi **di-commit** ke repository dan tidak diedit setelah diterapkan. Perubahan skema berikutnya dibuat sebagai migrasi baru.
 
@@ -153,8 +152,6 @@ ALTER TABLE "LogPatroli" ADD CONSTRAINT "LogPatroli_robotId_fkey"
   ON DELETE RESTRICT ON UPDATE CASCADE;
 ```
 
-> ✏️ **Cocokkan dengan isi `migration.sql` asli Anda** dan tempel potongan yang sebenarnya.
-
 Kesesuaian dengan constraint yang dirancang:
 
 | Constraint | Atribut Prisma | Hasil di PostgreSQL |
@@ -174,11 +171,8 @@ Perintah:
 docker exec -it pg-praktikum psql -U praktikum -d produk -c '\d "LogPatroli"'
 ```
 
-Tangkapan layar (indeks dan foreign key):
 
-![Hasil \d "LogPatroli" di psql](./img/modul-06-psql-logpatroli.png)
-
-> ✏️ **Simpan tangkapan layar Anda ke `docs/praktikum/img/modul-06-psql-logpatroli.png` (atau sesuaikan path).** Pastikan terlihat bagian `Indexes` (`LogPatroli_pkey`, `LogPatroli_robotId_kodeLog_key`) dan `Foreign-key constraints` (`LogPatroli_robotId_fkey ... ON DELETE RESTRICT`).
+![Hasil \d "LogPatroli" di psql]
 
 Sebagai referensi, keluaran teks yang diharapkan:
 
@@ -203,8 +197,6 @@ npx prisma db seed
 npx prisma db seed
 # Seed selesai: 6 robot, 6 log patroli
 ```
-
-> ✏️ **Ganti dengan keluaran terminal Anda (atau sertakan tangkapan layar).** Angka bergantung pada jumlah data awal Anda.
 
 Jumlah tetap sama pada eksekusi pertama dan kedua. Ini membuktikan seed tidak menggandakan data.
 
@@ -270,13 +262,12 @@ Instans dibuat sekali dan disimpan di `globalThis` pada mode pengembangan, karen
 
 **P2002 — nama robot ganda (create/update):**
 
-![Pesan P2002 di formulir tambah robot](./img/modul-06-p2002.png)
+![Pesan P2002 di formulir tambah robot]
 
 **P2025 — mengubah robot yang sudah dihapus:**
 
-![Pesan P2025 di formulir ubah robot](./img/modul-06-p2025.png)
+![Pesan P2025 di formulir ubah robot]
 
-> ✏️ **Ganti dengan tangkapan layar Anda.** P2002 harus menampilkan pesan *"Nama robot sudah terdaftar"* di bawah kolom nama. P2025 harus menampilkan *"Robot tidak ditemukan atau sudah dihapus."*. Cara memunculkan P2025: buka formulir ubah di dua tab, hapus robot di tab kedua, lalu kirim formulir di tab pertama.
 
 ---
 
@@ -297,7 +288,6 @@ Hasil saat menghapus robot yang masih memiliki log patroli: basis data menolak p
  dengan kode P2003 / "Foreign key constraint violated on the constraint: `LogPatroli_robotId_fkey`"]
 ```
 
-> ✏️ **Ganti blok di atas dengan pesan galat asli dari terminal.** Bentuk pesan dapat berbeda antarversi Prisma/adapter, jadi jangan menyalin dari contoh.
 
 Analisis: constraint bekerja sebagai pengaman terakhir. Robot yang masih memiliki riwayat patroli tidak dapat dihapus langsung, sehingga rekam jejak keamanan tidak hilang tanpa disadari.
 
@@ -348,9 +338,8 @@ docker exec -it pg-praktikum psql -U praktikum -d produk \
 [ISI: tempel hasil query SESUDAH — jumlah log robot yang diuji TIDAK berubah]
 ```
 
-![Bukti rollback](./img/modul-06-rollback.png)
+![Bukti rollback]
 
-> ✏️ **Isi dengan hasil nyata dan tangkapan layar Anda.**
 
 Kesimpulan: `deleteMany` sudah berjalan, tetapi karena `delete` kedua gagal (P2025), seluruh transaksi di-rollback sehingga jumlah log patroli tidak berubah. Setelah pengujian, `where` dikembalikan menjadi `{ id }`, dan penghapusan normal berhasil: robot beserta log patrolinya hilang dari katalog.
 
@@ -372,9 +361,6 @@ Ambang lulus = ⌈0,9 × n⌉ = ⌈0,9 × 10⌉ = **9 dari 10 skenario**.
 | 10 | Log kedua dengan kode sama pada robot yang sama | Galat kolom kode log (P2002) | [ISI] | [Lulus/Gagal] |
 
 **Persentase kelulusan:** [ISI jumlah lulus] / 10 = [ISI]% → [memenuhi / belum memenuhi] ambang 90%.
-
-> ✏️ **Isi kolom Aktual dengan hasil nyata, termasuk yang gagal.** Hasil yang jujur lebih bernilai daripada tabel yang semuanya "Lulus" tanpa bukti. Bila ada yang gagal, jelaskan singkat penyebabnya di bagian 7.
-
 ---
 
 ## 7. Kendala dan Penyelesaian
@@ -386,7 +372,6 @@ Ambang lulus = ⌈0,9 × n⌉ = ⌈0,9 × 10⌉ = **9 dari 10 skenario**.
 | 3 | [ISI, mis. `Uncached data was accessed outside of <Suspense>`] | Halaman membaca basis data tanpa batas Suspense pada proyek dengan `cacheComponents: true`. | Menambahkan `app/katalog/loading.tsx` dan `await connection()` pada halaman. |
 | 4 | [ISI, mis. tipe `null` tidak dapat diberikan ke `string \| undefined` pada `foto`] | Kolom opsional dari Prisma bernilai `null`, sedangkan `lib/tipe.ts` masih `foto?: string`. | Mengubah menjadi `foto: string \| null` dan menyesuaikan komponen yang membacanya. |
 
-> ✏️ **Pilih/ganti baris tabel agar hanya berisi kendala yang BENAR-BENAR Anda alami** (contoh di atas diambil dari daftar Troubleshooting modul), lalu sesuaikan penyebab dan penyelesaiannya dengan kejadian Anda. Cantumkan juga skenario uji yang gagal (jika ada) beserta perbaikannya.
 
 ---
 
@@ -400,4 +385,3 @@ Ambang lulus = ⌈0,9 × n⌉ = ⌈0,9 × 10⌉ = **9 dari 10 skenario**.
 | **Bagian yang TIDAK dibantu AI** | Seluruh eksekusi praktikum (menjalankan perintah, kode, migrasi, seed), keluaran terminal, tangkapan layar, hasil aktual 10 skenario, dan bagian Kendala. |
 | **Cara verifikasi** | (1) Setiap pernyataan teknis dicocokkan dengan modul praktikum dan dokumentasi resmi Prisma 7 serta PostgreSQL 18. (2) Skema dan constraint dicek langsung di `migration.sql` dan `\d "LogPatroli"` di psql. (3) Perilaku seed, transaksi, dan rollback dibuktikan dengan menjalankannya sendiri dan membandingkan hitungan data sebelum/sesudah. (4) Semua keluaran dan tangkapan layar berasal dari komputer saya sendiri, bukan dari AI. (5) Saya memastikan dapat menjelaskan skema, migrasi, query, dan transaksi pada produk saya tanpa bantuan AI. |
 
-> ✏️ **Sesuaikan agar sesuai dengan penggunaan AI Anda yang sebenarnya.** Jika tidak memakai AI, cukup tulis: **"Tidak menggunakan AI"**. Jangan mencantumkan hal yang tidak benar-benar dilakukan.
