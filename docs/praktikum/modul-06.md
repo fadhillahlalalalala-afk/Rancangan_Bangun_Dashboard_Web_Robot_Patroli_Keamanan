@@ -4,7 +4,6 @@
 
 Nama/NIM :Muhammad Fadhilah Chandra Mulan /105224036
 Repositori : https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/edit/main/docs/praktikum/modul-06.md
-Pull request : 
 
 
 ## 1. Rancangan Data
