@@ -3,7 +3,7 @@
 Nama/NIM :
 Mata Kuliah : Praktikum Pengembangan Aplikasi Web (052356)
 Tema Produk : Rancangan Bangun Dashboard Web Robot Patroli Keamanan
-Repositori :
+Repositori : https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/blob/main/tugas_pendahuluan_modul-07.md
 
 > **Pemetaan entitas.** Modul memakai entitas `Item` dan `Ulasan`. Pada produk saya, padanannya adalah:
 >
