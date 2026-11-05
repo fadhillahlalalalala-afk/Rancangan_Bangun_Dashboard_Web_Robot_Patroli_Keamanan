@@ -1,6 +1,6 @@
 # Tugas Pendahuluan Modul 7 — Debugging dan Telaah Kode
 
-Nama/NIM :
+Nama/NIM :Muhammad Fadhilah Chandra Mulan / 105224036
 Mata Kuliah : Praktikum Pengembangan Aplikasi Web (052356)
 Tema Produk : Rancangan Bangun Dashboard Web Robot Patroli Keamanan
 Repositori : https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/blob/main/tugas_pendahuluan_modul-07.md
@@ -116,15 +116,15 @@ redirect("/robot"); // di luar try/catch
 
 | Keterangan | Isi |
 |------------|-----|
-| Nama pasangan telaah | `<isi nama pasangan>` |
-| URL repositori pasangan | `https://github.com/<username-pasangan>/<nama-repositori>` |
-| Pasangan sudah menjadi collaborator di repositori saya | Ya / Belum |
-| Saya sudah menerima undangan collaborator di repositori pasangan | Ya / Belum |
+| Nama pasangan telaah | `Dwi setiawan` |
+| URL repositori pasangan | `https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/edit/main/tugas_pendahuluan_modul-07.md` |
+| Pasangan sudah menjadi collaborator di repositori saya |Belum |
+| Saya sudah menerima undangan collaborator di repositori pasangan | Ya |
 
 **Bukti undangan collaborator diterima:**
 
-`<lampirkan tangkapan layar Settings > Collaborators pada kedua repositori, atau email/notifikasi GitHub>`
+
 
 ---
 
-*Catatan pemanfaatan AI: `<isi sesuai AI_LOG.md, atau tulis "Tidak menggunakan AI">`*
+*Catatan pemanfaatan AI:Saya menggunakan Claude (Anthropic) untuk menyusun draf jawaban Tugas Pendahuluan Modul 7 dengan perintah utama "buatkan file .md jawaban tugas pendahuluan modul 7" dan "sesuaikan dengan tema Rancangan Bangun Dashboard Web Robot Patroli Keamanan". AI menghasilkan kerangka dan isi jawaban nomor 1 sampai 5, termasuk pemetaan entitas modul (Item dan Ulasan) ke entitas produk saya (Robot dan LaporanPatroli), contoh langkah reproduksi galat status robot, penjelasan breakpoint, conditional breakpoint, dan logpoint, arti kode galat Prisma P2002, P2003, dan P2025, serta penjelasan Boolean("false") dan redirect() di dalam try. Saya memverifikasi hasilnya dengan membandingkannya terhadap teks Modul 7 (Bagian B dan Tabel 3), memeriksa kesesuaian nama entitas, kolom, dan rute dengan skema Prisma dan kode pada produk saya, lalu mengubah bagian yang tidak sesuai dan mengisi sendiri data pribadi, hash commit, serta bukti pasangan telaah. Penggunaan ini juga saya catat di AI_LOG.md.*
