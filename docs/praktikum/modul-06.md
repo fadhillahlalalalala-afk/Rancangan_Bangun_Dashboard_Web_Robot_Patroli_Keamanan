@@ -6,9 +6,6 @@ Nama/NIM :Muhammad Fadhilah Chandra Mulan /105224036
 Repositori : https://github.com/fadhillahlalalalala-afk/Rancangan_Bangun_Dashboard_Web_Robot_Patroli_Keamanan/edit/main/docs/praktikum/modul-06.md
 Pull request : 
 
-> Catatan: dua entitas pada produk ini adalah **Robot** (induk) dan **LogPatroli** (anak). Keduanya menggantikan Item dan Ulasan pada contoh modul, dengan relasi 1:N dan constraint unik yang sama.
-
----
 
 ## 1. Rancangan Data
 
