@@ -6,7 +6,7 @@ Seluruh pengujian memakai data sintetis dari `prisma/seed.ts`. Kolom **Hasil akt
 
 | ID | Tujuan | Langkah pengujian | Hasil diharapkan | Hasil aktual | Status |
 |---|---|---|---|---|---|
-| T01 | Create Robot | Buka `/robots/new`, isi Kode `PTR-005`, Nama `Sentinel Echo`, Model `SecuBot X1`, Status Aktif, Baterai 90, Lokasi `Pos Jaga Selatan`, klik Simpan | Redirect ke `/robots`, robot baru tampil di daftar | | |
+| T01 | Create Robot | Buka `/robots/new`, isi Kode `PTR-005`, Nama `Sentinel Echo`, Model `SecuBot X1`, Status Aktif, Baterai 90, Lokasi `Pos Jaga Selatan`, klik Simpan | Redirect ke `/robots`, robot baru tampil di daftar |Berhasil diarahkan kembali ke halaman /robots dan entri data PTR-005 (Sentinel Echo) muncul di tabel daftar robot. |Lulus |
 | T02 | Read Robot | Buka `/robots` | Seluruh robot dari database tampil lengkap dengan status, baterai, jumlah patroli | | |
 | T03 | Update Robot | Klik Ubah pada `PTR-003`, ubah Status menjadi Aktif dan Baterai 80, simpan | Daftar menampilkan data baru; muat ulang halaman, data tetap | | |
 | T04 | Delete Robot | Klik Hapus pada `PTR-005`, konfirmasi | Robot hilang dari daftar dan dari tabel `Robot` | | |
