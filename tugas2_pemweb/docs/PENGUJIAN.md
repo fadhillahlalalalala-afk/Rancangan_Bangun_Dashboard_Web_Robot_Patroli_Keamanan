@@ -20,7 +20,7 @@ Seluruh pengujian memakai data sintetis dari `prisma/seed.ts`. Kolom **Hasil akt
 | ID | Tujuan | Langkah pengujian | Hasil diharapkan | Hasil aktual | Status |
 |---|---|---|---|---|---|
 | T09 | Patroli terhubung ke Robot | Buat patroli dengan robot `PTR-001`, lalu buka `/robots` | Kolom Patroli pada `PTR-001` bertambah 1; di `/patroli` kolom Robot menampilkan `PTR-001` |Relasi antar-tabel terbaca dengan benar: counter jumlah patroli pada entri PTR-001 bertambah satu, dan detail tabel patroli menampilkan relasi robot dengan tepat. |Lulus|
-| T10 | Cascade delete | Hapus robot `PTR-001` (punya 2 patroli seed), konfirmasi | Robot dan seluruh patroli miliknya hilang; patroli robot lain tidak terpengaruh | | |
+| T10 | Cascade delete | Hapus robot `PTR-001` (punya 2 patroli seed), konfirmasi | Robot dan seluruh patroli miliknya hilang; patroli robot lain tidak terpengaruh | Fitur cascade delete berfungsi dengan baik; saat PTR-001 dihapus, data patroli yang terikat langsung ikut terhapus dari database, sementara data robot lain beserta patrolinya aman tanpa gangguan.|Lulus |
 
 ## C. Bukti penolakan input tidak valid (validasi Zod server)
 
