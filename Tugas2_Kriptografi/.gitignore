@@ -1,0 +1,9 @@
+# Rahasia -- JANGAN PERNAH di-commit
+*.key
+*.pem
+.env
+.env.*
+secrets/
+__pycache__/
+*.pyc
+.venv/
