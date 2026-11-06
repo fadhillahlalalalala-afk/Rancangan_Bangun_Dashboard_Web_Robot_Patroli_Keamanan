@@ -44,8 +44,3 @@ SELECT id, kode, nama, status, baterai FROM "Robot" ORDER BY id;
 SELECT p.id, p.judul, p.status, r.kode FROM "Patroli" p JOIN "Robot" r ON r.id = p."robotId" ORDER BY p.id;
 ```
 
-## Ringkasan hasil
-
-- Skenario lulus: ___ / 10
-- Persentase: ___ % (minimal 90%)
-- Bukti validasi server terdokumentasi: ___ (minimal 3)
