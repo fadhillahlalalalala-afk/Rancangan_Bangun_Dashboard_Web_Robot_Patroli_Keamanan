@@ -1,0 +1,106 @@
+# Tugas Pendahuluan Modul 6 — PostgreSQL dan Prisma ORM
+
+Nama/NIM : Muhammad Fadhilah Chandra Mulan / 105224036
+Produk : Web Robot Patroli Keamanan
+
+Entitas: **Item** (titik patroli robot) 1:N **Ulasan** (catatan inspeksi operator pada titik tersebut).
+
+---
+
+## 1. Diagram dua entitas (1:N)
+
+Diagram diunggah sebagai berkas `erd-modul-06.png`. Rancangan skemanya:
+
+```prisma
+enum Kategori { gedung  parkir  perimeter }
+
+model Item {
+  id         Int      @id @default(autoincrement())   // PK
+  judul      String   @unique                         // unik
+  kategori   Kategori
+  deskripsi  String
+  tersedia   Boolean  @default(true)
+  gambar     String?
+  dibuatPada DateTime @default(now())
+  ulasan     Ulasan[]
+}
+
+model Ulasan {
+  id         Int      @id @default(autoincrement())   // PK
+  nama       String
+  nilai      Int
+  komentar   String
+  dibuatPada DateTime @default(now())
+  itemId     Int                                      // FK
+  item       Item     @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@unique([itemId, nama])                            // unik gabungan
+}
+```
+
+| Entitas | Atribut | Tipe | Kunci / constraint |
+|---|---|---|---|
+| Item | id | Int | Primary key, autoincrement |
+| Item | judul | String | Unik (satu titik patroli tidak terdaftar dua kali) |
+| Item | kategori | Kategori (enum) | Wajib |
+| Item | deskripsi | String | Wajib |
+| Item | tersedia | Boolean | Default true |
+| Item | gambar | String? | Opsional (boleh null) |
+| Item | dibuatPada | DateTime | Default now() |
+| Ulasan | id | Int | Primary key, autoincrement |
+| Ulasan | nama | String | Bagian dari unik gabungan |
+| Ulasan | nilai | Int | Wajib (1–5, divalidasi Zod) |
+| Ulasan | komentar | String | Wajib |
+| Ulasan | dibuatPada | DateTime | Default now() |
+| Ulasan | itemId | Int | Foreign key ke Item.id; bagian dari unik gabungan `(itemId, nama)` |
+
+Relasi 1:N: satu Item memiliki banyak Ulasan, sehingga foreign key `itemId` berada di tabel Ulasan (pihak banyak).
+
+## 2. Aturan penghapusan: Restrict
+
+Saya memilih **Restrict** pada relasi `Ulasan.itemId → Item.id`.
+
+Alasannya dari sisi nilai data produk: titik patroli menentukan area mana yang dijaga robot, dan ulasan adalah rekam jejak kondisi keamanan di titik itu (misalnya lampu mati atau pagar rusak). Keduanya bernilai sebagai bukti dan riwayat. Dengan **Cascade**, menghapus satu titik patroli akan menghapus seluruh riwayat inspeksinya secara diam-diam, sehingga bukti kejadian keamanan hilang tanpa disadari operator. Dengan **SetNull**, ulasan menjadi yatim tanpa titik patroli, sehingga tidak diketahui catatan itu tentang area mana; selain itu `itemId` wajib diisi pada rancangan ini. Dengan **Restrict**, basis data menolak penghapusan titik yang masih punya ulasan, jadi penghapusan hanya bisa dilakukan dengan sadar, yaitu lewat transaksi yang menghapus ulasan lalu item, dan semua berhasil atau semua batal.
+
+## 3. Daftar 10 skenario uji (8 CRUD, 2 relasi)
+
+| No | Jenis | Skenario | Langkah | Hasil yang diharapkan |
+|---|---|---|---|---|
+| 1 | Create | Tambah item sah | Masuk, buka `/katalog/tambah`, isi judul "Gerbang Barat", kategori perimeter, deskripsi 20 karakter, kirim | Item tersimpan di PostgreSQL, dialihkan ke `/katalog/[id]`, tampil di `/katalog` |
+| 2 | Create | Tambah item judul ganda | Kirim formulir dengan judul "Gerbang Utara" yang sudah ada | Galat pada kolom judul "Judul item sudah terdaftar" (P2002); tidak ada baris baru |
+| 3 | Create | Tambah item masukan tidak sah | Dengan `novalidate`, kirim judul "ab" | Galat Zod "Judul minimal 3 karakter"; tidak ada query ke basis data |
+| 4 | Read | Daftar katalog dari basis data | Buka `/katalog`, restart `npm run dev`, buka lagi | Semua item tampil dan tetap ada setelah restart |
+| 5 | Read | Detail dengan id tidak valid | Buka `/katalog/abc` dan `/katalog/99999` | Keduanya menampilkan halaman 404, bukan galat server |
+| 6 | Update | Ubah deskripsi item | Ubah deskripsi item 1 lalu simpan | Tersimpan; deskripsi baru tampil di detail dan katalog |
+| 7 | Update | Ubah item yang sudah dihapus | Buka form ubah, hapus item itu di tab lain, lalu simpan | Pesan "Item tidak ditemukan atau sudah dihapus." (P2025) |
+| 8 | Delete | Hapus ulasan | Klik "Hapus ulasan" pada satu ulasan di detail | Ulasan hilang; item dan ulasan lain tetap ada |
+| 9 | Relasi | Hapus item yang punya ulasan tanpa transaksi | Sementara pakai `prisma.item.delete` saja pada item beralasan | Ditolak ON DELETE RESTRICT (P2003); item dan ulasan tetap ada |
+| 10 | Relasi | Ulasan kedua dengan nama sama pada item yang sama | Kirim ulasan dengan nama "Pengguna Uji" pada item yang sudah punya ulasan itu | Galat kolom nama "Nama ini sudah mengulas item ini" (P2002 pada unik gabungan) |
+
+## 4. Urutan perintah Prisma 7 setelah skema berubah
+
+```bash
+npx prisma migrate dev --name <nama-perubahan>
+npx prisma generate
+npx prisma db seed
+```
+
+1. **`migrate dev`** membuat berkas SQL di `prisma/migrations` dari selisih skema, lalu menerapkannya ke basis data pengembangan. Berkas migrasi di-commit dan tidak diedit setelah diterapkan.
+2. **`generate`** menghasilkan ulang Prisma Client bertipe ke `generated/prisma`.
+3. **`db seed`** menjalankan perintah seed yang didaftarkan di `prisma.config.ts`.
+
+**Mengapa `generate` harus eksplisit:** pada Prisma 7, `migrate dev` hanya membuat dan menerapkan migrasi, tidak lagi menjalankan `generate` otomatis. Client dihasilkan ke folder proyek (`generated/prisma`) dan folder itu tidak di-commit, sehingga setelah skema berubah atau setelah `git clone` tipe bisa belum ada atau masih usang. Akibatnya kode memakai model lama, muncul galat TypeScript, atau `Module not found: '@/generated/prisma/client'`.
+
+**Mengapa seed harus eksplisit:** `migrate dev` dan `migrate reset` pada Prisma 7 juga tidak lagi menjalankan seed otomatis. Seed menulis data ke basis data nyata, jadi dijalankan dengan sengaja saat butuh data awal. Tanpa menjalankannya, basis data kosong setelah migrasi atau reset.
+
+## 5. Mengapa `upsert` dapat dijalankan ulang
+
+`upsert` bekerja berdasarkan kunci unik pada `where`, misalnya `where: { judul }` atau `where: { itemId_nama: { itemId, nama } }`. Bila baris dengan kunci itu **sudah ada**, Prisma menjalankan `update` (pada seed ini `update: {}`, jadi tidak mengubah apa pun). Bila **belum ada**, Prisma menjalankan `create`. Karena itu hasil akhir sama berapa pun seed dijalankan (idempoten): eksekusi kedua tetap menghasilkan jumlah item dan ulasan yang sama.
+
+Seed dengan `create` biasa selalu mencoba menyisipkan baris baru tanpa memeriksa apakah sudah ada. Pada eksekusi kedua, nilai `judul` atau pasangan `(itemId, nama)` melanggar constraint unik sehingga Prisma melempar galat **P2002** dan seed berhenti di tengah. Bila kolomnya tidak unik, hasilnya data ganda. Dengan `upsert`, seed aman diulang tanpa perlu `migrate reset` atau menghapus data lebih dulu.
+
+---
+
+## Catatan Pemanfaatan AI
+
+Alat: Claude (Anthropic). Perintah utama: meminta draf jawaban Tugas Pendahuluan Modul 6 dan diagram ERD untuk produk Web Robot Patroli Keamanan. Bagian yang digunakan: rancangan skema, diagram, daftar skenario uji, dan penjelasan butir 2, 4, dan 5. Verifikasi: mencocokkan dengan Modul 6 (Bagian B, E, dan J), memastikan nama model, constraint, dan aturan `onDelete` sama dengan `schema.prisma` yang saya tulis, serta akan menguji 10 skenario langsung pada praktikum.

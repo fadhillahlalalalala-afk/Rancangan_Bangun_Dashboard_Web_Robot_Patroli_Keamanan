@@ -1,0 +1,10 @@
+# Dockerfile AWAL (sebelum hardening), hanya untuk pemindaian "before" - sec-0.2
+# Sengaja memakai image besar, versi lama, dan root. Jangan dipakai untuk produksi.
+# Ganti tag dengan versi lama yang memang memuat kerentanan agar perbandingan bermakna.
+
+FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3000
+CMD ["node", "src/app.js"]
