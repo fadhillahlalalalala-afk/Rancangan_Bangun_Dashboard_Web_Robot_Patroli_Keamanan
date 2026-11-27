@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+secrets/
+node_modules
+npm-debug.log
+*.md
+security/
+scripts/
+Dockerfile*
+docker-compose*.yml
+lynis-*.txt
+image-scan-*.txt
+sbom.cdx.json

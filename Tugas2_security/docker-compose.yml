@@ -1,0 +1,72 @@
+# docker-compose akhir (sesudah hardening) - sec-0.2
+# Risiko: Risk-03, T04, T09, T11
+# Tidak ada blok `ports:` -> port app dan db TIDAK dipublikasikan ke host.
+# Layanan hanya terjangkau lewat jaringan internal Docker (`expose` hanya dokumentasi).
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: securebot:fixed
+    user: "1000:1000"            # non-root (user `node`)
+    read_only: true              # filesystem container hanya-baca
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL                      # buang semua Linux capabilities
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    mem_limit: 256m
+    cpus: 0.5
+    env_file:
+      - .env                     # rahasia dari variabel lingkungan, .env TIDAK di-commit
+    expose:
+      - "3000"
+    networks:
+      - internal
+    restart: unless-stopped
+
+  # Opsional: aktifkan hanya saat database dipakai (Milestone 2).
+  # Jalankan dengan: docker compose --profile db up -d
+  db:
+    profiles: ["db"]
+    image: postgres:16-alpine
+    user: "999:999"              # non-root (user postgres)
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+      - FOWNER                   # minimum yang dibutuhkan postgres saat init; hapus yang tidak perlu setelah diuji
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - internal
+    restart: unless-stopped
+
+networks:
+  internal:
+    internal: true               # tanpa akses keluar/masuk dari luar Docker
+
+volumes:
+  dbdata:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt   # jangan di-commit

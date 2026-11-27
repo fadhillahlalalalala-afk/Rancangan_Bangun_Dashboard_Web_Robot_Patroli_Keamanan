@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StatusRobot {
+  AKTIF
+  PATROLI
+  CHARGING
+  OFFLINE
+}
+
+enum StatusPatroli {
+  TERJADWAL
+  BERJALAN
+  SELESAI
+  DIBATALKAN
+}
+
+model Robot {
+  id        Int         @id @default(autoincrement())
+  kode      String      @unique
+  nama      String
+  model     String
+  status    StatusRobot @default(AKTIF)
+  baterai   Int         @default(100)
+  lokasi    String
+  patroli   Patroli[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Patroli {
+  id          Int           @id @default(autoincrement())
+  judul       String
+  area        String
+  rute        String
+  jadwalMulai DateTime
+  durasiMenit Int
+  status      StatusPatroli @default(TERJADWAL)
+  catatan     String?
+  robotId     Int
+  robot       Robot         @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([robotId])
+}
