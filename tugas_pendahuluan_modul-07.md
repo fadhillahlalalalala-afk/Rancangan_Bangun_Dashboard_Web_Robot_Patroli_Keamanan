@@ -127,4 +127,5 @@ redirect("/robot"); // di luar try/catch
 
 ---
 
-*Catatan pemanfaatan AI:Saya menggunakan Claude (Anthropic) untuk menyusun draf jawaban Tugas Pendahuluan Modul 7 dengan perintah utama "buatkan file .md jawaban tugas pendahuluan modul 7" dan "sesuaikan dengan tema Rancangan Bangun Dashboard Web Robot Patroli Keamanan". AI menghasilkan kerangka dan isi jawaban nomor 1 sampai 5, termasuk pemetaan entitas modul (Item dan Ulasan) ke entitas produk saya (Robot dan LaporanPatroli), contoh langkah reproduksi galat status robot, penjelasan breakpoint, conditional breakpoint, dan logpoint, arti kode galat Prisma P2002, P2003, dan P2025, serta penjelasan Boolean("false") dan redirect() di dalam try. Saya memverifikasi hasilnya dengan membandingkannya terhadap teks Modul 7 (Bagian B dan Tabel 3), memeriksa kesesuaian nama entitas, kolom, dan rute dengan skema Prisma dan kode pada produk saya, lalu mengubah bagian yang tidak sesuai dan mengisi sendiri data pribadi, hash commit, serta bukti pasangan telaah. Penggunaan ini juga saya catat di AI_LOG.md.*
+
+
